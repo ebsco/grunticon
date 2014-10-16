@@ -51,7 +51,8 @@ module.exports = function(grunt, undefined) {
             template: "",
             tmpDir: "grunticon-tmp",
             previewTemplate: path.join(__dirname, "..", "example", "preview.hbs"),
-            dynamicColorOnly: true
+            dynamicColorOnly: true,
+            stylesheet: ''
         });
 
         // just a quick starting message
@@ -114,6 +115,17 @@ module.exports = function(grunt, undefined) {
             noencodepng: true,
             prefix: config.cssprefix
         };
+        //EBSCO - Parsing less file;
+        var less = require('less'),
+            parser = new less.Parser(),
+            lessFilePath = path.join(process.cwd(), path.normalize(config.stylesheet)),
+            lessFile, ;
+        if (grunt.file.exists(lessFilePath)) {
+            lessFile = fs.readFileSync(lessFilePath).toString();
+        }
+        if (typeof lessFile === 'string') {
+
+        }
 
         grunt.log.writeln("Coloring SVG files");
         // create the tmp directory
