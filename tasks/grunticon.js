@@ -154,7 +154,7 @@ module.exports = function(grunt, undefined) {
 				}
 			}
 		}
-
+		debugger;
 		grunt.log.writeln("Coloring SVG files");
 		// create the tmp directory
 		var tmp = path.join(os.tmpDir(), config.tmpDir);
