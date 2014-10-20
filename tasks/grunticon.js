@@ -53,7 +53,9 @@ module.exports = function(grunt, undefined) {
 			previewTemplate: path.join(__dirname, "..", "example", "preview.hbs"),
 			dynamicColorOnly: true,
 			stylesheet: '',
-			styles: []
+			styles: [],
+			preview: false,
+			loader: false,
 		});
 
 		// just a quick starting message
@@ -86,11 +88,14 @@ module.exports = function(grunt, undefined) {
 		grunt.file.mkdir(config.dest);
 
 		// minify the source of the grunticon loader and write that to the output
-		// grunt.log.writeln("grunticon now minifying the stylesheet loader source.");
-		// var banner = grunt.file.read(config.files.banner);
-		// config.min = banner + "\n" + uglify.minify(config.files.loader).code;
-		// grunt.file.write(path.join(config.dest, config.loadersnippet), config.min);
-		// grunt.log.writeln("grunticon loader file created.");
+		if (config.loader) {
+			grunt.log.writeln("grunticon now minifying the stylesheet loader source.");
+			var banner = grunt.file.read(config.files.banner);
+			config.min = banner + "\n" + uglify.minify(config.files.loader).code;
+			grunt.file.write(path.join(config.dest, config.loadersnippet), config.min);
+			grunt.log.writeln("grunticon loader file created.");
+		}
+
 
 		var svgToPngOpts = {
 			pngfolder: pngfolder,
@@ -134,7 +139,7 @@ module.exports = function(grunt, undefined) {
 				return lessVars;
 			};
 
-		if (grunt.file.exists(lessFilePath)) {
+		if (grunt.file.exists(lessFilePath) && !grunt.file.isDir(lessFilePath)) {
 			lessFile = fs.readFileSync(lessFilePath).toString();
 		}
 		if (typeof lessFile === 'string') {
@@ -157,11 +162,21 @@ module.exports = function(grunt, undefined) {
 			fs.removeSync(tmp);
 		}
 		grunt.file.mkdir(tmp);
-		var colorFiles;
+		var colorFiles,
+			isEmpty = function(obj) {
+				for (var prop in obj) {
+					if (obj.hasOwnProperty(prop)) {
+						return false;
+					}
+				}
+
+				return true;
+			};
+
 		try {
 			var dc = new DirectoryColorfy(config.src, tmp, {
 				colors: config.colors,
-				dynamicColorOnly: config.dynamicColorOnly
+				dynamicColorOnly: isEmpty(config.colors) ? false : config.dynamicColorOnly
 			});
 			colorFiles = dc.convert();
 		} catch (e) {
@@ -200,13 +215,15 @@ module.exports = function(grunt, undefined) {
 					grunt.fatal(e);
 					done(false);
 				}
+				if (config.preview === true) {
+					grunt.log.writeln("Grunticon now creating Preview File");
+					try {
+						helper.createPreview(tmp, config);
+					} catch (er) {
+						grunt.fatal(er);
+					}
+				}
 
-				// grunt.log.writeln("Grunticon now creating Preview File");
-				// try {
-				// 	helper.createPreview(tmp, config);
-				// } catch (er) {
-				// 	grunt.fatal(er);
-				// }
 
 
 				grunt.log.writeln("Delete Temp Files");
