@@ -9,7 +9,7 @@
 /*global __dirname:true*/
 /*global require:true*/
 
-module.exports = function(grunt, undefined) {
+module.exports = function (grunt, undefined) {
 
 	"use strict";
 
@@ -26,7 +26,7 @@ module.exports = function(grunt, undefined) {
 
 	var helper = require(path.join('..', 'lib', 'grunticon-helper'));
 
-	grunt.registerMultiTask('grunticon', 'A mystical CSS icon solution.', function() {
+	grunt.registerMultiTask('grunticon', 'A mystical CSS icon solution.', function () {
 		var done = this.async();
 
 		// get the config
@@ -61,7 +61,7 @@ module.exports = function(grunt, undefined) {
 		// just a quick starting message
 		grunt.log.writeln("Look, it's a grunticon!");
 
-		var files = this.files.filter(function(file) {
+		var files = this.files.filter(function (file) {
 			return file.src[0].match(/png|svg/);
 		});
 		if (files.length === 0) {
@@ -70,7 +70,7 @@ module.exports = function(grunt, undefined) {
 			return;
 		}
 
-		files = files.map(function(file) {
+		files = files.map(function (file) {
 			return file.src[0];
 		});
 
@@ -95,7 +95,6 @@ module.exports = function(grunt, undefined) {
 			grunt.file.write(path.join(config.dest, config.loadersnippet), config.min);
 			grunt.log.writeln("grunticon loader file created.");
 		}
-
 
 		var svgToPngOpts = {
 			pngfolder: pngfolder,
@@ -125,7 +124,7 @@ module.exports = function(grunt, undefined) {
 
 		var lessFilePath = path.join(process.cwd(), path.normalize(config.stylesheet)),
 			lessFile, lessVars,
-			getLessVars = function(lessStr) {
+			getLessVars = function (lessStr) {
 				var keyVar, lessVars, line, lines, _i, _len;
 				lines = lessStr.split('\n');
 				lessVars = {};
@@ -154,7 +153,7 @@ module.exports = function(grunt, undefined) {
 				}
 			}
 		}
-		debugger;
+
 		grunt.log.writeln("Coloring SVG files");
 		// create the tmp directory
 		var tmp = path.join(os.tmpDir(), config.tmpDir);
@@ -163,7 +162,7 @@ module.exports = function(grunt, undefined) {
 		}
 		grunt.file.mkdir(tmp);
 		var colorFiles,
-			isEmpty = function(obj) {
+			isEmpty = function (obj) {
 				for (var prop in obj) {
 					if (obj.hasOwnProperty(prop)) {
 						return false;
@@ -185,11 +184,11 @@ module.exports = function(grunt, undefined) {
 		}
 
 		//copy non color config files into temp directory
-		var transferFiles = this.files.filter(function(f) {
+		var transferFiles = this.files.filter(function (f) {
 			return !f.src[0].match(/\.colors/);
 		});
 
-		transferFiles.forEach(function(f) {
+		transferFiles.forEach(function (f) {
 			var filenameArr = f.src[0].split("/"),
 				filename = filenameArr[filenameArr.length - 1];
 			grunt.file.copy(f.src[0], path.join(tmp, filename));
@@ -197,7 +196,7 @@ module.exports = function(grunt, undefined) {
 
 		grunt.log.writeln("Converting SVG to PNG");
 		svgToPng.convert(tmp, config.dest, svgToPngOpts)
-			.then(function(result, err) {
+			.then(function (result, err) {
 				if (err) {
 					grunt.fatal(err);
 				}
@@ -223,8 +222,6 @@ module.exports = function(grunt, undefined) {
 						grunt.fatal(er);
 					}
 				}
-
-
 
 				grunt.log.writeln("Delete Temp Files");
 				fs.removeSync(tmp);
