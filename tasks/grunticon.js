@@ -146,7 +146,7 @@ module.exports = function (grunt, undefined) {
 		if (grunt.file.exists(lessFilePath) && !grunt.file.isDir(lessFilePath)) {
 			lessFile = fs.readFileSync(lessFilePath).toString();
 		}
-		if (typeof lessFile === 'string') {
+		if (typeof lessFile === 'string' && config.lessprefix) {
 			lessVars = getLessVars(lessFile);
 
 			var prefixLocation, colorName;
