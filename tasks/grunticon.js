@@ -53,7 +53,7 @@ module.exports = function (grunt, undefined) {
 			previewTemplate: path.join(__dirname, "..", "example", "preview.hbs"),
 			dynamicColorOnly: true,
 			stylesheet: '',
-			styles: [],
+			lessprefix: '',
 			preview: false,
 			loader: false,
 		});
@@ -132,7 +132,12 @@ module.exports = function (grunt, undefined) {
 					line = lines[_i];
 					if (line.indexOf('@') === 0) {
 						keyVar = line.split(';')[0].split(':');
-						lessVars[keyVar[0]] = keyVar[1].trim();
+						if (keyVar[1].indexOf('@') > -1) {
+							lessVars[keyVar[0].trim()] = lessVars[keyVar[1].trim()];
+						}
+						else {
+							lessVars[keyVar[0].trim()] = keyVar[1].trim();
+						}
 					}
 				}
 				return lessVars;
@@ -141,15 +146,15 @@ module.exports = function (grunt, undefined) {
 		if (grunt.file.exists(lessFilePath) && !grunt.file.isDir(lessFilePath)) {
 			lessFile = fs.readFileSync(lessFilePath).toString();
 		}
-		if (typeof lessFile === 'string') {
+		if (typeof lessFile === 'string' && config.lessprefix) {
 			lessVars = getLessVars(lessFile);
 
+			var prefixLocation, colorName;
 			for (var key in lessVars) {
-				for (var index in config.styles) {
-					var color = config.styles[index];
-					if (key.indexOf(color) > -1) {
-						config.colors[color] = lessVars[key];
-					}
+				prefixLocation = key.indexOf(config.lessprefix);
+				if (prefixLocation === 1) { // first character of less variables is '@'
+					colorName = key.replace('@' + config.lessprefix, '');
+					config.colors[colorName] = lessVars[key];
 				}
 			}
 		}
