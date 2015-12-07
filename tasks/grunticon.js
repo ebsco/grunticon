@@ -59,7 +59,7 @@ module.exports = function (grunt, undefined) {
 		});
 
 		// just a quick starting message
-		grunt.log.writeln("Look, it's a grunticon!");
+		grunt.log.writeln("(EBSCO) Look, it's a grunticon!");
 
 		var files = this.files.filter(function (file) {
 			return file.src[0].match(/png|svg/);
@@ -122,7 +122,7 @@ module.exports = function (grunt, undefined) {
 		};
 		//EBSCO - Parsing less file, parse function found on stackoverflow, question 11827453;
 
-		var lessFilePath = path.join(process.cwd(), path.normalize(config.stylesheet)),
+		var lessFilePath = path.resolve(config.stylesheet),
 			lessFile, lessVars,
 			getLessVars = function (lessStr) {
 				var keyVar, lessVars, line, lines, _i, _len;
