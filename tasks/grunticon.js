@@ -199,8 +199,8 @@ module.exports = function (grunt, undefined) {
 			grunt.file.copy(f.src[0], path.join(tmp, filename));
 		});
 
-		grunt.log.writeln("Converting SVG to PNG");
-		svgToPng.convert(tmp, config.dest, svgToPngOpts)
+		grunt.log.writeln("Converting SVG to PNG OR NOT");
+		svgToPng.convert(tmp, path.join(config.dest, pngfolder), svgToPngOpts)
 			.then(function (result, err) {
 				if (err) {
 					grunt.fatal(err);
